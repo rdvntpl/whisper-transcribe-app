@@ -93,7 +93,8 @@ async function transcribeAudio(filePath, { model, translate = false }) {
 		whisperOptions: {
 			outputInJson: true,
 			translateToEnglish: translate,
-			noGpu: true,
+			noGpu: false,
+			customFlags:['-mc', MODEL_ROOT],
 		},
 	})
 
