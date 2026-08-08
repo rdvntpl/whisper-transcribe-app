@@ -2,7 +2,7 @@
 [![Demo](https://img.shields.io/badge/Demo-Live_Preview-4BC51D?style=for-the-badge&logo=googlechrome&logoColor=white)]((https://fred-diff-molecules-explicitly.trycloudflare.com/))
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> **🚀 Live Demo:** [https://demo-url-buraya.com](https://fred-diff-molecules-explicitly.trycloudflare.com/)
+> **🚀 Live Demo:** [demo.com](https://fred-diff-molecules-explicitly.trycloudflare.com/)
 
 # Whisper Transcribe App
 
