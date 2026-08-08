@@ -61,3 +61,19 @@ ready to transcribe with no first-request delay.
 | `JWT_SECRET`         | dev default          | **Set this in production!**          |
 | `DATA_DIR`           | `./src/data`         | SQLite database directory            |
 | `WHISPER_MODEL_ROOT` | OS tmp dir           | Where ggml model files are cached    |
+| `ADMIN_EMAILS`       | (none)               | Comma-separated emails auto-promoted to admin on signup/login/startup |
+
+## Admin
+
+Any account whose email is listed in `ADMIN_EMAILS` is automatically granted admin access
+(checked at signup, login, and server startup, so it survives redeploys). Admins get an **Admin**
+link in the navbar leading to `/admin`, where they can:
+
+- View every user's plan, monthly usage, and transcription count
+- Change a user's plan (Free/Pro/Plus)
+- Reset a user's monthly usage
+- Grant/revoke admin access for other users (at least one admin must always remain)
+- Delete a user and their data
+
+All of this is backed by `POST/PATCH/DELETE /api/admin/users/...` routes, which require a valid
+JWT for a user with `is_admin = 1` (enforced server-side, not just hidden in the UI).

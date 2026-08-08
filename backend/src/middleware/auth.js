@@ -1,7 +1,7 @@
 const { verifyToken } = require('../jwt')
 const db = require('../db')
 
-const getUserById = db.prepare('SELECT id, email, plan, created_at FROM users WHERE id = ?')
+const getUserById = db.prepare('SELECT id, email, plan, is_admin, created_at FROM users WHERE id = ?')
 
 function requireAuth(req, res, next) {
 	const header = req.headers.authorization || ''
@@ -24,4 +24,12 @@ function requireAuth(req, res, next) {
 	}
 }
 
-module.exports = { requireAuth }
+// Must run after requireAuth.
+function requireAdmin(req, res, next) {
+	if (!req.user || !req.user.is_admin) {
+		return res.status(403).json({ error: 'Admin access required' })
+	}
+	next()
+}
+
+module.exports = { requireAuth, requireAdmin }

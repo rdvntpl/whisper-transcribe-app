@@ -28,4 +28,11 @@ export const api = {
 	setPlan: (token, plan) => request('/plans', { method: 'POST', body: { plan }, token }),
 	history: token => request('/transcribe/history', { token }),
 	transcribe: (token, formData) => request('/transcribe', { method: 'POST', body: formData, token, isFormData: true }),
+	adminListUsers: token => request('/admin/users', { token }),
+	adminSetPlan: (token, userId, plan) =>
+		request(`/admin/users/${userId}/plan`, { method: 'PATCH', body: { plan }, token }),
+	adminResetUsage: (token, userId) => request(`/admin/users/${userId}/reset-usage`, { method: 'POST', token }),
+	adminSetAdmin: (token, userId, isAdmin) =>
+		request(`/admin/users/${userId}/admin`, { method: 'PATCH', body: { isAdmin }, token }),
+	adminDeleteUser: (token, userId) => request(`/admin/users/${userId}`, { method: 'DELETE', token }),
 }

@@ -14,6 +14,7 @@ db.exec(`
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     plan TEXT NOT NULL DEFAULT 'free',
+    is_admin INTEGER NOT NULL DEFAULT 0,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -36,5 +37,13 @@ db.exec(`
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
   );
 `)
+
+// Migration for DBs created before `is_admin` existed (CREATE TABLE IF NOT EXISTS
+// above won't add columns to an already-existing table).
+try {
+	db.exec('ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0')
+} catch (err) {
+	if (!/duplicate column/i.test(err.message)) throw err
+}
 
 module.exports = db

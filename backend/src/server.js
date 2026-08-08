@@ -7,6 +7,10 @@ const { router: authRouter } = require('./routes/auth.routes')
 const { router: meRouter } = require('./routes/me.routes')
 const { router: planRouter } = require('./routes/plan.routes')
 const { router: transcribeRouter } = require('./routes/transcribe.routes')
+const { router: adminRouter } = require('./routes/admin.routes')
+const { syncConfiguredAdmins } = require('./admin')
+
+syncConfiguredAdmins()
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -19,6 +23,7 @@ app.use('/api/auth', authRouter)
 app.use('/api/me', meRouter)
 app.use('/api/plans', planRouter)
 app.use('/api/transcribe', transcribeRouter)
+app.use('/api/admin', adminRouter)
 
 // Serve the built React app (see Dockerfile - frontend is built into ./public).
 const publicDir = path.join(__dirname, '..', 'public')

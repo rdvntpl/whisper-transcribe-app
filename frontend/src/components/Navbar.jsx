@@ -19,6 +19,7 @@ export default function Navbar() {
 				<div className="nav-right">
 					<Link to="/">Dashboard</Link>
 					<Link to="/upgrade">Upgrade</Link>
+					{user.isAdmin && <Link to="/admin">Admin</Link>}
 					<span className={`plan-badge plan-${user.plan}`}>{user.planDetails.label}</span>
 					<span className="user-email">{user.email}</span>
 					<button className="btn-link" onClick={handleLogout}>

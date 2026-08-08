@@ -4,12 +4,13 @@ const db = require('../db')
 const { signToken } = require('../jwt')
 const { serializePlan, getPlan } = require('../plans')
 const { getMonthlyUsageSeconds } = require('../usage')
+const { isConfiguredAdminEmail } = require('../admin')
 
 const router = express.Router()
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-const insertUser = db.prepare('INSERT INTO users (email, password_hash, plan) VALUES (?, ?, ?)')
+const insertUser = db.prepare('INSERT INTO users (email, password_hash, plan, is_admin) VALUES (?, ?, ?, ?)')
 const findByEmail = db.prepare('SELECT * FROM users WHERE email = ?')
 
 function publicUser(user) {
@@ -20,6 +21,7 @@ function publicUser(user) {
 		plan: user.plan,
 		planDetails: serializePlan(plan),
 		usageSeconds: getMonthlyUsageSeconds(user.id),
+		isAdmin: !!user.is_admin,
 	}
 }
 
@@ -37,8 +39,9 @@ router.post('/signup', (req, res) => {
 	}
 
 	const passwordHash = bcrypt.hashSync(password, 10)
-	const info = insertUser.run(email.toLowerCase(), passwordHash, 'free')
-	const user = { id: info.lastInsertRowid, email: email.toLowerCase(), plan: 'free' }
+	const isAdmin = isConfiguredAdminEmail(email) ? 1 : 0
+	const info = insertUser.run(email.toLowerCase(), passwordHash, 'free', isAdmin)
+	const user = { id: info.lastInsertRowid, email: email.toLowerCase(), plan: 'free', is_admin: isAdmin }
 
 	const token = signToken(user)
 	res.status(201).json({ token, user: publicUser(user) })

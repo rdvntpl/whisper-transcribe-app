@@ -2,10 +2,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import Upgrade from './pages/Upgrade'
+import Admin from './pages/Admin'
 
 export default function App() {
 	return (
@@ -29,6 +31,14 @@ export default function App() {
 							<ProtectedRoute>
 								<Upgrade />
 							</ProtectedRoute>
+						}
+					/>
+					<Route
+						path="/admin"
+						element={
+							<AdminRoute>
+								<Admin />
+							</AdminRoute>
 						}
 					/>
 				</Routes>
