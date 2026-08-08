@@ -1,0 +1,8 @@
+node_modules
+frontend/dist
+backend/data
+backend/uploads
+backend/whisper-models
+*.log
+.env
+.DS_Store

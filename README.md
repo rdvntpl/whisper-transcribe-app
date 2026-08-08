@@ -1,0 +1,63 @@
+# Whisper Transcribe App
+
+A full-stack app that transcribes/translates audio to text using **OpenAI's Whisper model running
+100% locally** (via [`nodejs-whisper`](https://www.npmjs.com/package/nodejs-whisper), which wraps
+`whisper.cpp` - no OpenAI API key, no network calls, no audio ever leaves the server).
+
+## Stack
+
+- **Frontend:** React (Vite) + React Router
+- **Backend:** Node.js + Express, JWT auth, SQLite (`better-sqlite3`)
+- **Transcription:** local `whisper.cpp` via `nodejs-whisper` (CPU inference)
+- **Tiers:** Free / Pro / Plus, each with a different Whisper model size and usage quota
+
+## Plans
+
+| Plan | Model  | Monthly minutes | Max file length |
+|------|--------|------------------|------------------|
+| Free | tiny   | 10               | 5 min            |
+| Pro  | base   | 120              | 30 min           |
+| Plus | small  | Unlimited        | 60 min           |
+
+Plan switching in this build is a **mock upgrade** (no payment processing) - intended for a
+self-hosted instance. Wire up Stripe (or similar) in `backend/src/routes/plan.routes.js` if you
+need real billing.
+
+## Local development
+
+```bash
+# Backend
+cd backend
+npm install
+npx nodejs-whisper download   # interactive - pick tiny/base/small, or rely on autoDownloadModelName
+npm run dev
+
+# Frontend (separate terminal)
+cd frontend
+npm install
+npm run dev
+```
+
+The Vite dev server proxies `/api` to `http://localhost:3000`.
+
+Requires `ffmpeg`, `cmake`, and a C++ toolchain (`make`/`g++`) on your machine/host so
+`nodejs-whisper` can compile `whisper.cpp` on first use.
+
+## Docker
+
+```bash
+docker build -t whisper-app .
+docker run -p 3500:3000 -e JWT_SECRET=change-me -v whisper-data:/app/data whisper-app
+```
+
+The image bakes in `tiny`, `base`, and `small` models at build time, so the container starts
+ready to transcribe with no first-request delay.
+
+## Environment variables
+
+| Variable            | Default             | Description                          |
+|---------------------|----------------------|---------------------------------------|
+| `PORT`               | `3000`              | HTTP port                            |
+| `JWT_SECRET`         | dev default          | **Set this in production!**          |
+| `DATA_DIR`           | `./src/data`         | SQLite database directory            |
+| `WHISPER_MODEL_ROOT` | OS tmp dir           | Where ggml model files are cached    |

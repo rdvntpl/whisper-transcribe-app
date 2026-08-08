@@ -1,0 +1,9 @@
+node_modules
+frontend/dist
+backend/data
+backend/uploads
+backend/whisper-models
+.env
+.git
+.DS_Store
+npm-debug.log*

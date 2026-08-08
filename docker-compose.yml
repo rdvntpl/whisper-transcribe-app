@@ -1,0 +1,16 @@
+services:
+  whisper-app:
+    image: whisper-app:latest
+    restart: unless-stopped
+    ports:
+      - '3500:3000'
+    environment:
+      - PORT=3000
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - DATA_DIR=/app/data
+      - WHISPER_MODEL_ROOT=/app/whisper-models
+    volumes:
+      - whisper-data:/app/data
+
+volumes:
+  whisper-data:
