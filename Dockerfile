@@ -24,15 +24,19 @@ ENV WHISPER_MODEL_ROOT=/app/whisper-models
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV DATA_DIR=/app/data
+# Some aarch64 GCC versions choke (fp16 NEON "always_inline" errors) on whisper.cpp's
+# auto-detected -march=native flags. Building generic (non-native) CPU kernels avoids it
+# and is still correct/portable across ARM64 hosts (just skips a few micro-optimizations).
+ENV NODEJS_WHISPER_CMAKE_ARGS=-DGGML_NATIVE=OFF
 
 # Warm up the build: this compiles whisper.cpp once (cached for every model after)
 # and bakes in the ggml weights for all three plan tiers, so containers start
 # instantly with no first-request compile/download delay.
-RUN ffmpeg -f lavfi -i anullsrc=r=16000:cl=mono -t 1 -ar 16000 -ac 1 -c:a pcm_s16le /tmp/warmup.wav \
-    && node -e "const {nodewhisper}=require('nodejs-whisper'); nodewhisper('/tmp/warmup.wav',{modelName:'tiny',autoDownloadModelName:'tiny',modelRootPath:process.env.WHISPER_MODEL_ROOT,whisperOptions:{outputInText:true}}).then(()=>console.log('tiny ready')).catch(e=>{console.error(e);process.exit(1)})" \
-    && node -e "const {nodewhisper}=require('nodejs-whisper'); nodewhisper('/tmp/warmup.wav',{modelName:'base',autoDownloadModelName:'base',modelRootPath:process.env.WHISPER_MODEL_ROOT,whisperOptions:{outputInText:true}}).then(()=>console.log('base ready')).catch(e=>{console.error(e);process.exit(1)})" \
-    && node -e "const {nodewhisper}=require('nodejs-whisper'); nodewhisper('/tmp/warmup.wav',{modelName:'small',autoDownloadModelName:'small',modelRootPath:process.env.WHISPER_MODEL_ROOT,whisperOptions:{outputInText:true}}).then(()=>console.log('small ready')).catch(e=>{console.error(e);process.exit(1)})" \
-    && rm -f /tmp/warmup.wav /tmp/warmup*.json
+RUN ffmpeg -f lavfi -i anullsrc=r=16000:cl=mono -t 1 -ar 16000 -ac 1 -c:a pcm_s16le scripts/warmup.wav \
+    && node scripts/warmup-model.js tiny \
+    && node scripts/warmup-model.js base \
+    && node scripts/warmup-model.js small \
+    && rm -f scripts/warmup.wav scripts/warmup*.txt scripts/warmup*.json
 
 VOLUME ["/app/data"]
 EXPOSE 3000
