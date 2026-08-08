@@ -1,8 +1,8 @@
 <!-- Badges / Links -->
-[![Demo](https://img.shields.io/badge/Demo-Live_Preview-4BC51D?style=for-the-badge&logo=googlechrome&logoColor=white)](DEMO_URL_BURAYA)
+[![Demo](https://img.shields.io/badge/Demo-Live_Preview-4BC51D?style=for-the-badge&logo=googlechrome&logoColor=white)]([DEMO_URL_BURAYA](https://fred-diff-molecules-explicitly.trycloudflare.com/))
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> **🚀 Live Demo:** [Demo]([https://demo-url-buraya.com](https://fred-diff-molecules-explicitly.trycloudflare.com/))  
+> **🚀 Live Demo:** [[Demo](https://fred-diff-molecules-explicitly.trycloudflare.com/)]([Demo))  
 
 # Whisper Transcribe App
 
