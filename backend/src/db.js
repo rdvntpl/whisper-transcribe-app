@@ -34,16 +34,28 @@ db.exec(`
     mode TEXT,
     model TEXT,
     text TEXT,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    segments TEXT,
+    status TEXT NOT NULL DEFAULT 'done',
+    error TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP
   );
 `)
 
-// Migration for DBs created before `is_admin` existed (CREATE TABLE IF NOT EXISTS
-// above won't add columns to an already-existing table).
-try {
-	db.exec('ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0')
-} catch (err) {
-	if (!/duplicate column/i.test(err.message)) throw err
+// Migration for DBs created before `is_admin`/job-status columns existed
+// (CREATE TABLE IF NOT EXISTS above won't add columns to an already-existing table).
+function addColumnIfMissing(table, definition) {
+	try {
+		db.exec(`ALTER TABLE ${table} ADD COLUMN ${definition}`)
+	} catch (err) {
+		if (!/duplicate column/i.test(err.message)) throw err
+	}
 }
+
+addColumnIfMissing('users', 'is_admin INTEGER NOT NULL DEFAULT 0')
+addColumnIfMissing('transcriptions', "status TEXT NOT NULL DEFAULT 'done'")
+addColumnIfMissing('transcriptions', 'error TEXT')
+addColumnIfMissing('transcriptions', 'updated_at TEXT DEFAULT CURRENT_TIMESTAMP')
+addColumnIfMissing('transcriptions', 'segments TEXT')
 
 module.exports = db

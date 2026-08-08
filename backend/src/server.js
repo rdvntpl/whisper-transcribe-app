@@ -3,6 +3,7 @@ const path = require('path')
 const express = require('express')
 const cors = require('cors')
 
+const db = require('./db')
 const { router: authRouter } = require('./routes/auth.routes')
 const { router: meRouter } = require('./routes/me.routes')
 const { router: planRouter } = require('./routes/plan.routes')
@@ -11,6 +12,13 @@ const { router: adminRouter } = require('./routes/admin.routes')
 const { syncConfiguredAdmins } = require('./admin')
 
 syncConfiguredAdmins()
+
+// Jobs left in 'processing' after a restart lost their in-memory promise chain
+// and will never complete - fail them so they don't block new uploads forever.
+db.prepare(`
+	UPDATE transcriptions SET status = 'failed', error = 'Interrupted by server restart. Please try again.', updated_at = CURRENT_TIMESTAMP
+	WHERE status = 'processing'
+`).run()
 
 const app = express()
 const PORT = process.env.PORT || 3000
