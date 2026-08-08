@@ -15,19 +15,7 @@ A full-stack app that transcribes/translates audio to text using **OpenAI's Whis
 - **Frontend:** React (Vite) + React Router
 - **Backend:** Node.js + Express, JWT auth, SQLite (`better-sqlite3`)
 - **Transcription:** local `whisper.cpp` via `nodejs-whisper` (CPU inference)
-- **Tiers:** Free / Pro / Plus, each with a different Whisper model size and usage quota
 
-## Plans
-
-| Plan | Model  | Monthly minutes | Max file length |
-|------|--------|------------------|------------------|
-| Free | tiny   | 10               | 5 min            |
-| Pro  | base   | 120              | 30 min           |
-| Plus | small  | Unlimited        | 60 min           |
-
-Plan switching in this build is a **mock upgrade** (no payment processing) - intended for a
-self-hosted instance. Wire up Stripe (or similar) in `backend/src/routes/plan.routes.js` if you
-need real billing.
 
 ## Local development
 
